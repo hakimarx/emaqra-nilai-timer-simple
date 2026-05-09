@@ -34,9 +34,9 @@
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Dashboard</span>
                 </li>
-                <li class="nav-item" data-target="settings">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span>Pengaturan Utama</span>
+                <li class="nav-item" data-target="registration">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Pendaftaran</span>
                 </li>
                 <li class="nav-item" data-target="maqra">
                     <i class="fa-solid fa-book-quran"></i>
@@ -46,9 +46,13 @@
                     <i class="fa-solid fa-star-half-stroke"></i>
                     <span>e-Scoring</span>
                 </li>
+                <li class="nav-item" data-target="settings">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Pengaturan Sistem</span>
+                </li>
                 <li class="nav-item" data-target="public-screen">
                     <i class="fa-solid fa-display"></i>
-                    <span>by hakimarx</span>
+                    <span>Layar Publik</span>
                 </li>
             </ul>
         </nav>
@@ -98,6 +102,103 @@
                     </div>
                 </section>
 
+                <!-- Registration Page -->
+                <section id="registration" class="page">
+                    <div class="grid-2-col">
+                        <!-- Data Peserta -->
+                        <div class="glass-panel settings-panel">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3><i class="fa-solid fa-users"></i> Data Peserta</h3>
+                                <button id="btn-reset-participants" class="btn-danger btn-sm"><i
+                                        class="fa-solid fa-users-slash"></i> Kosongkan</button>
+                            </div>
+
+                            <div class="settings-section">
+                                <h4>Tambah Peserta Manual</h4>
+                                <div class="form-group">
+                                    <label>Nama Peserta</label>
+                                    <input type="text" id="manual-participant-name" placeholder="Nama Lengkap">
+                                </div>
+                                <div class="grid-2-col">
+                                    <div class="form-group">
+                                        <label>Cabang</label>
+                                        <select id="manual-participant-cabang">
+                                            <!-- Dynamic -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Babak</label>
+                                        <select id="manual-participant-babak">
+                                            <!-- Dynamic -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <button id="btn-add-participant" class="btn-primary w-full"><i
+                                        class="fa-solid fa-user-plus"></i> Tambah Peserta</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Atau Upload Excel (Kolom: Nama, Cabang, Babak)</label>
+                                <input type="file" id="upload-excel" accept=".xlsx, .xls">
+                            </div>
+                            <div class="table-responsive mt-4" style="max-height: 400px;">
+                                <table class="rekap-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama</th>
+                                            <th>Cabang & Babak</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="participants-tbody">
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">Belum ada data peserta</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Judge Management -->
+                        <div class="glass-panel settings-panel">
+                            <h3><i class="fa-solid fa-user-tie"></i> Manajemen Hakim</h3>
+                            <div class="settings-section">
+                                <div class="form-group">
+                                    <label>Pilih Cabang</label>
+                                    <select id="judge-branch-select">
+                                        <!-- Dynamic -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nama Hakim (Pemisah Koma)</label>
+                                    <input type="text" id="judge-names-input"
+                                        placeholder="Hakim A, Hakim B, Hakim C...">
+                                </div>
+                                <button id="btn-save-judges" class="btn-warning w-full"><i
+                                        class="fa-solid fa-users-gear"></i>
+                                    Update Daftar Hakim</button>
+                            </div>
+
+                            <div class="table-responsive mt-4">
+                                <table class="rekap-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cabang</th>
+                                            <th>Daftar Hakim</th>
+                                            <th style="width: 100px;">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="judges-tbody">
+                                        <!-- Dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Settings Page -->
                 <section id="settings" class="page">
                     <div class="grid-2-col">
@@ -136,7 +237,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
+                        <div class="glass-panel settings-panel">
                             <!-- Timer Settings -->
                             <div class="settings-section">
                                 <h4>Pengaturan Timer</h4>
@@ -170,106 +273,81 @@
                                 </div>
                             </div>
 
+                            <!-- Hifdzil Quran Settings -->
+                            <div class="settings-section">
+                                <h4>Konfigurasi Paket Hifdzil Quran</h4>
+                                <div class="grid-2-col">
+                                    <div class="form-group">
+                                        <label>Jml Paket Mutsyabihat (SULIT)</label>
+                                        <input type="number" id="setting-hfq-mut" value="1" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jml Paket Biasa (REGULER)</label>
+                                        <input type="number" id="setting-hfq-reg" value="3" min="0">
+                                    </div>
+                                </div>
+                            </div>
+
                             <button id="btn-save-settings" class="btn-primary w-full mb-2"><i
                                     class="fa-solid fa-save"></i>
                                 Simpan Pengaturan</button>
                             <button id="btn-reset-event" class="btn-danger w-full btn-sm"><i
                                     class="fa-solid fa-trash-can"></i> Reset Event & Nilai</button>
                         </div>
+                    </div>
 
-                        <!-- Data Peserta -->
-                        <div class="glass-panel settings-panel">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                <h3><i class="fa-solid fa-users"></i> Data Peserta</h3>
-                                <button id="btn-reset-participants" class="btn-danger btn-sm"><i
-                                        class="fa-solid fa-users-slash"></i> Kosongkan Peserta</button>
-                            </div>
-
-                            <!-- Manual Add -->
-                            <div class="settings-section">
-                                <h4>Tambah Peserta Manual</h4>
-                                <div class="form-group">
-                                    <label>Nama Peserta</label>
-                                    <input type="text" id="manual-participant-name" placeholder="Nama Lengkap">
+                    <!-- Branch & Round Management -->
+                    <div class="grid-2-col mt-4">
+                        <div class="glass-panel" style="padding: 24px;">
+                            <h3><i class="fa-solid fa-code-branch"></i> Cabang</h3>
+                            <div class="form-group mt-4">
+                                <label>Nama Cabang Baru</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="new-branch-name" placeholder="Contoh: Tilawah Dewasa">
+                                    <button id="btn-add-branch" class="btn-primary"><i
+                                            class="fa-solid fa-plus"></i></button>
                                 </div>
-                                <div class="form-group">
-                                    <label>Cabang</label>
-                                    <select id="manual-participant-cabang">
-                                        <option value="Tilawah Dewasa">Tilawah Dewasa</option>
-                                        <option value="Tilawah Anak-anak">Tilawah Anak-anak</option>
-                                        <option value="Tartil">Tartil</option>
-                                        <option value="Tahfidz 1 Juz">Tahfidz 1 Juz</option>
-                                        <option value="Tahfidz 5 Juz">Tahfidz 5 Juz</option>
-                                        <option value="Tahfidz 10 Juz">Tahfidz 10 Juz</option>
-                                        <option value="Tahfidz 20 Juz">Tahfidz 20 Juz</option>
-                                        <option value="Tahfidz 30 Juz">Tahfidz 30 Juz</option>
-                                    </select>
-                                </div>
-                                <button id="btn-add-participant" class="btn-primary w-full"><i
-                                        class="fa-solid fa-user-plus"></i> Tambah Peserta</button>
                             </div>
-
-                            <div class="form-group">
-                                <label>Atau Upload Excel (Kolom: Nama, Cabang)</label>
-                                <input type="file" id="upload-excel" accept=".xlsx, .xls">
-                            </div>
-                            <div class="table-responsive mt-4" style="max-height: 250px;">
+                            <div class="table-responsive mt-4" style="max-height: 300px;">
                                 <table class="rekap-table">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>Nama</th>
+                                            <th style="width: 50px;">No</th>
                                             <th>Cabang</th>
-                                            <th>Aksi</th>
+                                            <th style="width: 100px;">Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="participants-tbody">
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted">Belum ada data peserta</td>
-                                        </tr>
+                                    <tbody id="branches-tbody">
+                                        <!-- Dynamic -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Judge Management Section -->
-                    <div class="glass-panel mt-4" style="padding: 24px;">
-                        <h3><i class="fa-solid fa-user-tie"></i> Manajemen Hakim Percabang</h3>
-                        <div class="grid-2-col mt-4">
-                            <div class="form-group">
-                                <label>Pilih Cabang</label>
-                                <select id="judge-branch-select">
-                                    <option value="juz_30">Juz 30 (Juz Amma)</option>
-                                    <option value="juz_1">Juz 1 (Tanpa Fatihah)</option>
-                                    <option value="tilawah_tartil">Tilawah / Tartil</option>
-                                    <option value="5_juz">Cabang 5 Juz</option>
-                                    <option value="10_juz">Cabang 10 Juz</option>
-                                    <option value="20_juz">Cabang 20 Juz</option>
-                                    <option value="30_juz">Cabang 30 Juz</option>
-                                </select>
+                        <div class="glass-panel" style="padding: 24px;">
+                            <h3><i class="fa-solid fa-layer-group"></i> Babak</h3>
+                            <div class="form-group mt-4">
+                                <label>Nama Babak Baru</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="new-round-name" placeholder="Contoh: Final">
+                                    <button id="btn-add-round" class="btn-primary"><i
+                                            class="fa-solid fa-plus"></i></button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Nama Hakim (Pemisah Koma)</label>
-                                <input type="text" id="judge-names-input" placeholder="Hakim A, Hakim B, Hakim C...">
+                            <div class="table-responsive mt-4" style="max-height: 300px;">
+                                <table class="rekap-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50px;">No</th>
+                                            <th>Babak</th>
+                                            <th style="width: 100px;">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rounds-tbody">
+                                        <!-- Dynamic -->
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                        <button id="btn-save-judges" class="btn-warning w-full"><i class="fa-solid fa-users-gear"></i>
-                            Update Daftar Hakim</button>
-
-                        <div class="table-responsive mt-4">
-                            <table class="rekap-table">
-                                <thead>
-                                    <tr>
-                                        <th>Cabang</th>
-                                        <th>Daftar Hakim</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="judges-tbody">
-                                    <!-- Dynamic -->
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </section>
@@ -285,22 +363,48 @@
                             </select>
                         </div>
                         <div class="control-group">
-                            <label>Acak Cabang:</label>
+                            <label>Kategori:</label>
                             <select id="maqra-cabang">
-                                <option value="juz_30">Juz 30 (Juz Amma)</option>
-                                <option value="juz_1">Juz 1 (Tanpa Fatihah)</option>
-                                <option value="tilawah_tartil">Tilawah / Tartil (Non-Juz 30 & Awal Ruku')</option>
-                                <option value="5_juz">Cabang 5 Juz</option>
-                                <option value="10_juz">Cabang 10 Juz</option>
-                                <option value="20_juz">Cabang 20 Juz</option>
-                                <option value="30_juz">Cabang 30 Juz (Seluruh Mushaf)</option>
+                                <optgroup label="MHQ (Hifdzil Quran)">
+                                    <option value="mhq-1juz1" data-jenis="MHQ" data-index="1">1 Juz (Juz 1)</option>
+                                    <option value="mhq-1juz30" data-jenis="MHQ" data-index="30">1 Juz (Juz 30)</option>
+                                    <option value="mhq-5juz" data-jenis="MHQ" data-index="1-5">5 Juz</option>
+                                    <option value="mhq-10juz" data-jenis="MHQ" data-index="1-10">10 Juz</option>
+                                    <option value="mhq-20juz" data-jenis="MHQ" data-index="1-20">20 Juz</option>
+                                    <option value="mhq-30juz" data-jenis="MHQ" data-index="1-30">30 Juz</option>
+                                </optgroup>
+                                <optgroup label="Maqra (Tilawah/Qiraat)">
+                                    <option value="maqra-tartil" data-jenis="Maqra" data-index="1-10">Tartil</option>
+                                    <option value="maqra-tilawah-anak" data-jenis="Maqra" data-index="1-10">Tilawah
+                                        Anak-anak</option>
+                                    <option value="maqra-tilawah-remaja" data-jenis="Maqra" data-index="1-20">Tilawah
+                                        Remaja</option>
+                                    <option value="maqra-tilawah-dewasa" data-jenis="Maqra" data-index="1-30">Tilawah
+                                        Dewasa</option>
+                                    <option value="maqra-mujawwad-dewasa" data-jenis="Maqra" data-index="1-30">Qiraat
+                                        Mujawwad Dewasa</option>
+                                    <option value="maqra-murottal-remaja" data-jenis="Maqra" data-index="1-20">Qiraat
+                                        Murottal Remaja</option>
+                                    <option value="maqra-murottal-dewasa" data-jenis="Maqra" data-index="1-30">Qiraat
+                                        Murottal Dewasa</option>
+                                </optgroup>
                             </select>
                             <button id="btn-acak-maqra" class="btn-primary"><i class="fa-solid fa-shuffle"></i>
                                 Acak</button>
                         </div>
+                        <div class="control-group">
+                            <label>Mode Acak:</label>
+                            <select id="maqra-random-mode">
+                                <option value="auto">Otomatis</option>
+                                <option value="package">Paket</option>
+                            </select>
+                        </div>
                         <div class="control-separator">ATAU</div>
                         <div class="control-group">
                             <label>Pilih Manual:</label>
+                            <select id="manual-juz">
+                                <option value="">-- Juz --</option>
+                            </select>
                             <select id="manual-surah">
                                 <option value="">-- Surat --</option>
                             </select>
@@ -312,16 +416,36 @@
 
                     <div class="maqra-timer-layout">
                         <!-- Mushaf Display -->
-                        <div class="glass-panel mushaf-container">
+                        <div class="glass-panel mushaf-container" id="mushaf-main-container">
                             <div class="mushaf-header">
-                                <button id="btn-prev-ruku" class="btn-secondary" disabled><i
-                                        class="fa-solid fa-chevron-left"></i> Sebelumnya</button>
+                                <div class="mushaf-tools-left">
+                                    <button id="btn-prev-ruku" class="btn-secondary" title="Halaman Sebelumnya">
+                                        <i class="fa-solid fa-chevron-left"></i> Sebelum
+                                    </button>
+                                    <div class="zoom-controls">
+                                        <button id="btn-zoom-out" class="btn-sm btn-secondary"><i
+                                                class="fa-solid fa-minus"></i></button>
+                                        <button id="btn-zoom-in" class="btn-sm btn-secondary"><i
+                                                class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+
                                 <div class="mushaf-title-area text-center">
                                     <h3 id="mushaf-surah-title" class="quran-text-title text-gold">Surat...</h3>
                                     <p id="mushaf-ruku-info" class="text-sm text-muted">Menunggu Maqra...</p>
                                 </div>
-                                <button id="btn-next-ruku" class="btn-secondary" disabled>Berikutnya <i
-                                        class="fa-solid fa-chevron-right"></i></button>
+
+                                <div class="mushaf-tools-right">
+                                    <div id="pkg-buttons-bar" class="pkg-buttons-bar hidden">
+                                    </div>
+                                    <button id="btn-toggle-night" class="btn-secondary btn-sm"
+                                        title="Mode Malam/Terang">
+                                        <i class="fa-solid fa-moon"></i>
+                                    </button>
+                                    <button id="btn-next-ruku" class="btn-secondary" title="Halaman Berikutnya">
+                                        Berikut <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div id="mushaf-loading" class="hidden text-center" style="padding: 50px;">
@@ -353,7 +477,7 @@
                                     <button id="btn-timer-start" class="btn-success w-full mb-2"><i
                                             class="fa-solid fa-play"></i> Mulai</button>
                                     <button id="btn-timer-stop" class="btn-danger w-full mb-2"><i
-                                            class="fa-solid fa-stop"></i> Berhenti</button>
+                                            class="fa-solid fa-stop"></i> Waktu Habis</button>
                                     <button id="btn-timer-reset" class="btn-secondary w-full"><i
                                             class="fa-solid fa-rotate-left"></i> Reset</button>
                                 </div>
@@ -368,6 +492,13 @@
                         <!-- Input Score -->
                         <div class="glass-panel scoring-input">
                             <h3><i class="fa-solid fa-keyboard"></i> Input Nilai Hakim</h3>
+
+                            <div class="form-group">
+                                <label>Pilih Cabang</label>
+                                <select id="score-branch-select">
+                                    <option value="">-- Semua Cabang --</option>
+                                </select>
+                            </div>
 
                             <div class="form-group">
                                 <label>Pilih Peserta</label>
@@ -403,6 +534,7 @@
                                         <tr>
                                             <th>Peringkat</th>
                                             <th>Peserta</th>
+                                            <th>Cabang & Babak</th>
                                             <th>Skor Akhir</th>
                                         </tr>
                                     </thead>
@@ -455,6 +587,8 @@
         </main>
     </div>
 
+    <script src="quran_data.js"></script>
+    <script src="mutasyabihat_data.js"></script>
     <script src="app.js"></script>
 </body>
 
