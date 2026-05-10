@@ -341,17 +341,56 @@ function editParticipant(index) {
 
 // --- Maqra Logic ---
 async function fetchSurahList() {
-    try {
-        const res = await fetch('https://api.quran.gading.dev/surah');
-        const data = await res.json();
-        const select = document.getElementById('manual-surah');
-        data.data.forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.number;
-            opt.textContent = `${s.number}. ${s.name.transliteration.id}`;
-            select.appendChild(opt);
+    const listContainer = document.getElementById('surah-dropdown-list');
+    const searchInput = document.getElementById('manual-surah-search');
+    const hiddenInput = document.getElementById('manual-surah');
+    
+    if (!listContainer || !searchInput) return;
+
+    // Use Offline Data
+    const surahs = QURAN_OFFLINE.map(s => ({
+        number: s.id,
+        name: s.transliteration
+    }));
+
+    const renderList = (filter = '') => {
+        const filtered = surahs.filter(s => 
+            s.name.toLowerCase().includes(filter.toLowerCase()) || 
+            s.number.toString().includes(filter)
+        );
+
+        listContainer.innerHTML = filtered.map(s => `
+            <div class="dropdown-item" data-value="${s.number}">${s.number}. ${s.name}</div>
+        `).join('');
+
+        // Add Click Listeners
+        listContainer.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                searchInput.value = item.textContent;
+                hiddenInput.value = item.dataset.value;
+                listContainer.classList.add('hidden');
+            });
         });
-    } catch (e) { console.error('Gagal fetch daftar surat'); }
+    };
+
+    searchInput.addEventListener('input', (e) => {
+        renderList(e.target.value);
+        listContainer.classList.remove('hidden');
+    });
+
+    searchInput.addEventListener('focus', () => {
+        renderList(searchInput.value);
+        listContainer.classList.remove('hidden');
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#surah-search-container')) {
+            listContainer.classList.add('hidden');
+        }
+    });
+
+    renderList();
 }
 
 function initMaqraListeners() {

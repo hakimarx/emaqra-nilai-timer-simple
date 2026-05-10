@@ -405,9 +405,13 @@
                             <select id="manual-juz">
                                 <option value="">-- Juz --</option>
                             </select>
-                            <select id="manual-surah">
-                                <option value="">-- Surat --</option>
-                            </select>
+                            <div class="searchable-dropdown" id="surah-search-container">
+                                <input type="text" id="manual-surah-search" placeholder="Cari Surat..." autocomplete="off">
+                                <input type="hidden" id="manual-surah" value="">
+                                <div class="dropdown-list hidden" id="surah-dropdown-list">
+                                    <!-- Dynamic -->
+                                </div>
+                            </div>
                             <input type="number" id="manual-ayah" placeholder="Ayat" min="1" style="width: 80px;">
                             <button id="btn-manual-maqra" class="btn-warning"><i class="fa-solid fa-check"></i>
                                 Tampilkan</button>
