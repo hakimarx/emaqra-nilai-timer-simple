@@ -9,8 +9,12 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thetruetruth/quran-data-kfgqpc@main/css/kfgqpc.font.css">
     <!-- SheetJS for Excel Upload -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        window.__APP_SIGNATURE__ = "hakimarx";
+    </script>
 </head>
 
 <body>
@@ -62,8 +66,8 @@
             <!-- Topbar -->
             <header class="topbar glass-panel">
                 <h2 id="page-title">Dashboard</h2>
+
                 <div class="user-info">
-                    <span class="time-display" id="current-time">00:00:00</span>
                     <div class="avatar">
                         <i class="fa-solid fa-user"></i>
                     </div>
@@ -271,6 +275,20 @@
                                         <option value="median">Nilai Tengah (Median)</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label>Tampilan Lampu Timer</label>
+                                    <select id="setting-timer-lamp-style">
+                                        <option value="single">Satu Lampu (Standar Saat Ini)</option>
+                                        <option value="multi">Empat Lampu (Vertikal seperti Gambar)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Jenis Mushaf Default</label>
+                                    <select id="setting-mushaf-type">
+                                        <option value="kemenag">Mushaf Kemenag (API/Offline)</option>
+                                        <option value="madinah">Mushaf Madinah (Offline)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <!-- Hifdzil Quran Settings -->
@@ -419,48 +437,141 @@
                     </div>
 
                     <div class="maqra-timer-layout">
-                        <!-- Mushaf Display -->
-                        <div class="glass-panel mushaf-container" id="mushaf-main-container">
-                            <div class="mushaf-header">
-                                <div class="mushaf-tools-left">
-                                    <button id="btn-prev-ruku" class="btn-secondary" title="Halaman Sebelumnya">
-                                        <i class="fa-solid fa-chevron-left"></i> Sebelum
-                                    </button>
-                                    <div class="zoom-controls">
-                                        <button id="btn-zoom-out" class="btn-sm btn-secondary"><i
-                                                class="fa-solid fa-minus"></i></button>
-                                        <button id="btn-zoom-in" class="btn-sm btn-secondary"><i
-                                                class="fa-solid fa-plus"></i></button>
+                        <!-- Left Content Area -->
+                        <div class="maqra-left-content" style="flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%;">
+                            
+                            <!-- Mushaf Display -->
+                            <div class="glass-panel mushaf-container" id="mushaf-main-container" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                                <div class="mushaf-header">
+                                    <div class="mushaf-tools-left">
+                                        <button id="btn-prev-ruku" class="btn-secondary" title="Halaman Sebelumnya">
+                                            <i class="fa-solid fa-chevron-left"></i> Sebelum
+                                        </button>
+                                        <div class="zoom-controls">
+                                            <button id="btn-zoom-out" class="btn-sm btn-secondary"><i
+                                                    class="fa-solid fa-minus"></i></button>
+                                            <button id="btn-zoom-in" class="btn-sm btn-secondary"><i
+                                                    class="fa-solid fa-plus"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mushaf-title-area text-center">
+                                        <h3 id="mushaf-surah-title" class="quran-text-title text-gold">Surat...</h3>
+                                        <p id="mushaf-ruku-info" class="text-sm text-muted">Menunggu Maqra...</p>
+                                    </div>
+
+                                    <div class="mushaf-tools-right">
+                                        <div id="pkg-buttons-bar" class="pkg-buttons-bar hidden">
+                                        </div>
+                                        <button id="btn-toggle-standard" class="btn-secondary btn-sm"
+                                            title="Jenis Mushaf (Kemenag/Madinah)">
+                                            <i class="fa-solid fa-book"></i> <span id="standard-label">KEMENAG</span>
+                                        </button>
+                                        <button id="btn-toggle-night" class="btn-secondary btn-sm"
+                                            title="Mode Malam/Terang">
+                                            <i class="fa-solid fa-moon"></i>
+                                        </button>
+                                        <button id="btn-next-ruku" class="btn-secondary" title="Halaman Berikutnya">
+                                            Berikut <i class="fa-solid fa-chevron-right"></i>
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div class="mushaf-title-area text-center">
-                                    <h3 id="mushaf-surah-title" class="quran-text-title text-gold">Surat...</h3>
-                                    <p id="mushaf-ruku-info" class="text-sm text-muted">Menunggu Maqra...</p>
+                                <div id="mushaf-loading" class="hidden text-center" style="padding: 50px;">
+                                    <i class="fa-solid fa-spinner fa-spin text-4xl text-gold"></i>
+                                    <p class="mt-4">Memuat Mushaf...</p>
                                 </div>
 
-                                <div class="mushaf-tools-right">
-                                    <div id="pkg-buttons-bar" class="pkg-buttons-bar hidden">
+                                <div id="mushaf-content" class="mushaf-content">
+                                    <div class="empty-state">
+                                        <i class="fa-solid fa-book-quran"></i>
+                                        <p>Tampilan Mushaf akan muncul di sini.</p>
                                     </div>
-                                    <button id="btn-toggle-night" class="btn-secondary btn-sm"
-                                        title="Mode Malam/Terang">
-                                        <i class="fa-solid fa-moon"></i>
-                                    </button>
-                                    <button id="btn-next-ruku" class="btn-secondary" title="Halaman Berikutnya">
-                                        Berikut <i class="fa-solid fa-chevron-right"></i>
-                                    </button>
                                 </div>
                             </div>
 
-                            <div id="mushaf-loading" class="hidden text-center" style="padding: 50px;">
-                                <i class="fa-solid fa-spinner fa-spin text-4xl text-gold"></i>
-                                <p class="mt-4">Memuat Mushaf...</p>
-                            </div>
+                            <!-- Qiraat View (Toggled when Kategori is Qiraat) -->
+                            <div id="qiraat-layout" class="hidden" style="flex: 1; display: flex; flex-direction: column; min-height: 0; height: 100%;">
+                                <!-- Landing Page: 10 Qiraat Boxes -->
+                                <div id="qiraat-landing" style="background: #1e293b; border-radius: 8px; padding: 20px; border: 1px solid #334155; margin-bottom: 20px; flex: 1; overflow-y: auto;">
+                                    <div class="qiraat-header-title-alt">
+                                        <h2><i class="fa-solid fa-book-quran"></i> QIRAAT - MUSHAF 10 IMAM</h2>
+                                    </div>
+                                    <div id="qiraat-imams-grid" class="qiraat-grid-alt">
+                                        <!-- JavaScript injects 10 cards here -->
+                                    </div>
+                                </div>
 
-                            <div id="mushaf-content" class="mushaf-content">
-                                <div class="empty-state">
-                                    <i class="fa-solid fa-book-quran"></i>
-                                    <p>Tampilan Mushaf akan muncul di sini.</p>
+                                <!-- Viewer Page: 2 PDF Iframes side-by-side -->
+                                <div id="qiraat-viewer" class="hidden" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                                    <div class="qiraat-viewer-header">
+                                        <button id="btn-qiraat-back" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+                                        
+                                        <div class="qiraat-viewer-title">
+                                            <h2 id="qiraat-viewer-imam-name">MUSHAF IMAM NAFI'</h2>
+                                            <div class="sync-badge"><i class="fa-solid fa-link"></i> Sinkronisasi Halaman Aktif</div>
+                                        </div>
+
+                                         <div class="qiraat-viewer-controls-right">
+                                            <div class="qiraat-mode-selector" id="qiraat-mode-selector">
+                                                <button id="qiraat-toggle-pdf" class="btn-toggle" title="Tampilkan Mode PDF"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                                <button id="qiraat-toggle-jpg" class="btn-toggle active" title="Tampilkan Gambar Mushaf"><i class="fa-solid fa-image"></i> JPG</button>
+                                                <button id="qiraat-toggle-text" class="btn-toggle" title="Tampilkan Mode Teks"><i class="fa-solid fa-file-lines"></i> Teks</button>
+                                            </div>
+                                            <button id="btn-qiraat-zoom-out" class="btn-secondary btn-sm" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                                            <button id="btn-qiraat-zoom-in" class="btn-secondary btn-sm" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                                            <button id="btn-qiraat-prev-imam" class="btn-secondary btn-sm" title="Imam Sebelumnya"><i class="fa-solid fa-chevron-up"></i></button>
+                                            <button id="btn-qiraat-next-imam" class="btn-secondary btn-sm" title="Imam Berikutnya"><i class="fa-solid fa-chevron-down"></i></button>
+                                            <div class="page-nav">
+                                                <button id="btn-qiraat-prev" class="btn-secondary btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                                                <input type="number" id="qiraat-page-input" value="1" min="1" max="604">
+                                                <button id="btn-qiraat-next" class="btn-secondary btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <div class="qiraat-dual-container" style="flex: 1; display: flex; gap: 16px; min-height: 0;">
+                                        <!-- Riwayat 1 -->
+                                        <div class="qiraat-pane" style="flex: 1; display: flex; flex-direction: column;">
+                                            <div class="qiraat-pane-header" id="qiraat-narrator-1-name">QOLUN</div>
+                                            <div class="qiraat-iframe-wrapper" id="pdfWrapper1" style="overflow: auto; flex: 1; display: flex; align-items: flex-start; justify-content: center;">
+                                                <iframe id="qiraat-iframe-1" src="" style="border: none; display: block; margin: 0 auto; transition: width 0.2s, height 0.2s; pointer-events: none;" class="hidden"></iframe>
+                                                <img id="qiraat-img-1" src="" style="display: block; margin: 0 auto; transition: width 0.2s; max-width: none;" alt="Mushaf" class="hidden">
+                                            </div>
+                                            <div class="qiraat-text-wrapper hidden" id="textWrapper1" style="flex: 1; overflow-y: auto; background: #fff8e7; padding: 25px; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; transition: background 0.3s;">
+                                                <div class="qiraat-text-loading hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #92400e; padding: 30px 0;">
+                                                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 32px; margin-bottom: 12px;"></i>
+                                                    <span style="font-size: 14px; font-weight: 600;">Memuat teks Qiraat...</span>
+                                                </div>
+                                                <div class="qiraat-text-error hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 20px; color: #991b1b;">
+                                                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 32px; margin-bottom: 12px; color: #dc2626;"></i>
+                                                    <span class="error-msg" style="font-size: 13px; font-weight: 600; line-height: 1.5;">Teks tidak tersedia. Silakan gunakan mode PDF/JPG.</span>
+                                                </div>
+                                                <div class="qiraat-text-content" id="qiraat-text-content-1" style="direction: rtl; text-align: justify; font-size: 26px; line-height: 2.2; font-family: sans-serif; min-height: 100%; color: #1a1a1a;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Riwayat 2 -->
+                                        <div class="qiraat-pane" style="flex: 1; display: flex; flex-direction: column;">
+                                            <div class="qiraat-pane-header" id="qiraat-narrator-2-name">WARSY</div>
+                                            <div class="qiraat-iframe-wrapper" id="pdfWrapper2" style="overflow: auto; flex: 1; display: flex; align-items: flex-start; justify-content: center;">
+                                                <iframe id="qiraat-iframe-2" src="" style="border: none; display: block; margin: 0 auto; transition: width 0.2s, height 0.2s; pointer-events: none;" class="hidden"></iframe>
+                                                <img id="qiraat-img-2" src="" style="display: block; margin: 0 auto; transition: width 0.2s; max-width: none;" alt="Mushaf" class="hidden">
+                                            </div>
+                                            <div class="qiraat-text-wrapper hidden" id="textWrapper2" style="flex: 1; overflow-y: auto; background: #fff8e7; padding: 25px; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; transition: background 0.3s;">
+                                                <div class="qiraat-text-loading hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #92400e; padding: 30px 0;">
+                                                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 32px; margin-bottom: 12px;"></i>
+                                                    <span style="font-size: 14px; font-weight: 600;">Memuat teks Qiraat...</span>
+                                                </div>
+                                                <div class="qiraat-text-error hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 20px; color: #991b1b;">
+                                                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 32px; margin-bottom: 12px; color: #dc2626;"></i>
+                                                    <span class="error-msg" style="font-size: 13px; font-weight: 600; line-height: 1.5;">Teks tidak tersedia. Silakan gunakan mode PDF/JPG.</span>
+                                                </div>
+                                                <div class="qiraat-text-content" id="qiraat-text-content-2" style="direction: rtl; text-align: justify; font-size: 26px; line-height: 2.2; font-family: sans-serif; min-height: 100%; color: #1a1a1a;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -472,7 +583,8 @@
                                 <p id="side-p-cabang" class="text-sm text-muted">-</p>
                             </div>
 
-                            <div class="lamp-display">
+                            <!-- Single Lamp Style (Standar) -->
+                            <div id="timer-style-single" class="lamp-display">
                                 <div id="side-lamp" class="lamp-indicator"></div>
                                 <h2 id="side-time-display" class="digital-timer-medium">00:00</h2>
                                 <p id="side-timer-status" class="timer-status-text">SIAP</p>
@@ -484,6 +596,54 @@
                                             class="fa-solid fa-stop"></i> Waktu Habis</button>
                                     <button id="btn-timer-reset" class="btn-secondary w-full"><i
                                             class="fa-solid fa-rotate-left"></i> Reset</button>
+                                </div>
+                            </div>
+
+                            <!-- Multi Lamp Style (Vertikal seperti Gambar) -->
+                            <div id="timer-style-multi" class="lamp-display-multi hidden">
+                                <div class="timer-box-yellow">
+                                    <span id="multi-time-display">00:00</span>
+                                </div>
+                                
+                                <div class="multi-lamps-container">
+                                    <div id="lamp-multi-prep" class="lamp-circle" title="Persiapan"></div>
+                                    <div id="lamp-multi-reading" class="lamp-circle" title="Mulai Baca"></div>
+                                    <div id="lamp-multi-warning" class="lamp-circle" title="Persiapan Berhenti"></div>
+                                    <div id="lamp-multi-stop" class="lamp-circle" title="Selesai"></div>
+                                </div>
+
+                                <div class="timer-actions-multi mt-2 w-full">
+                                    <button id="btn-timer-start-multi" class="btn-success btn-multi-style"><i class="fa-solid fa-clock"></i> Mulai</button>
+                                    <button id="btn-timer-stop-multi" class="btn-danger btn-multi-style"><i class="fa-solid fa-xmark"></i> Stop</button>
+                                    <button id="btn-timer-reset-multi" class="btn-secondary btn-multi-style-sm mt-2"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                                </div>
+                            </div>
+                                <!-- Mini Timer Settings -->
+                                <div class="timer-settings-mini" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; width: 100%;">
+                                    <h5 style="color: var(--gold); font-size: 11px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px;"><i class="fa-solid fa-sliders"></i> Atur Timer</h5>
+                                    <div class="form-group-mini" style="display: flex; flex-direction: column; gap: 8px; font-size: 11px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <label style="color: var(--text-muted);">Persiapan:</label>
+                                            <div style="display: flex; align-items: center; gap: 4px;">
+                                                <input type="number" id="mini-timer-prep" value="0" min="0" style="width: 50px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 4px; border-radius: 4px; font-size: 11px; text-align: center;">
+                                                <span style="color: var(--text-muted); font-size: 10px;">dtk</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <label style="color: var(--text-muted);">Durasi:</label>
+                                            <div style="display: flex; align-items: center; gap: 4px;">
+                                                <input type="number" id="mini-timer-duration" value="10" min="1" style="width: 50px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 4px; border-radius: 4px; font-size: 11px; text-align: center;">
+                                                <span style="color: var(--text-muted); font-size: 10px;">mnt</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <label style="color: var(--text-muted);">Peringatan:</label>
+                                            <div style="display: flex; align-items: center; gap: 4px;">
+                                                <input type="number" id="mini-timer-yellow" value="1" min="1" style="width: 50px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 4px; border-radius: 4px; font-size: 11px; text-align: center;">
+                                                <span style="color: var(--text-muted); font-size: 10px;">mnt</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -574,13 +734,30 @@
                                 <!-- Timer Public -->
                                 <div class="public-card timer-focus">
                                     <div class="public-card-title">INDIKATOR WAKTU</div>
-                                    <div id="public-timer-lamp" class="lamp-indicator-large"></div>
-                                    <div class="digital-timer-large">
-                                        <span id="public-time-display">00:00</span>
+                                    <!-- Public Single Lamp Style -->
+                                    <div id="public-timer-style-single" class="public-timer-layout-single" style="display: flex; flex-direction: column; align-items: center;">
+                                        <div id="public-timer-lamp" class="lamp-indicator-large"></div>
+                                        <div class="digital-timer-large">
+                                            <span id="public-time-display">00:00</span>
+                                        </div>
+                                        <p id="public-timer-status"
+                                            style="color: var(--text-muted); font-size: 18px; margin-top: 10px; font-weight:bold;">
+                                            SIAP</p>
                                     </div>
-                                    <p id="public-timer-status"
-                                        style="color: var(--text-muted); font-size: 18px; margin-top: 10px; font-weight:bold;">
-                                        SIAP</p>
+                                    
+                                    <!-- Public Multi Lamp Style -->
+                                    <div id="public-timer-style-multi" class="public-timer-layout-multi hidden" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                                        <div class="timer-box-yellow-large" style="background: #facc15; border: 3px solid #000; border-radius: 8px; padding: 10px 20px; font-size: 40px; font-weight: 800; color: #000; font-family: monospace; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); min-width: 160px; line-height: 1;">
+                                            <span id="public-multi-time-display">00:00</span>
+                                        </div>
+                                        
+                                        <div class="multi-lamps-container-horizontal" style="display: flex; gap: 12px; margin-top: 10px;">
+                                            <div id="public-lamp-multi-prep" class="lamp-circle-large" title="Persiapan" style="width: 50px; height: 50px; border-radius: 50%; background: #475569; border: 3px solid rgba(255,255,255,0.1); transition: 0.4s;"></div>
+                                            <div id="public-lamp-multi-reading" class="lamp-circle-large" title="Mulai Baca" style="width: 50px; height: 50px; border-radius: 50%; background: #475569; border: 3px solid rgba(255,255,255,0.1); transition: 0.4s;"></div>
+                                            <div id="public-lamp-multi-warning" class="lamp-circle-large" title="Persiapan Berhenti" style="width: 50px; height: 50px; border-radius: 50%; background: #475569; border: 3px solid rgba(255,255,255,0.1); transition: 0.4s;"></div>
+                                            <div id="public-lamp-multi-stop" class="lamp-circle-large" title="Selesai" style="width: 50px; height: 50px; border-radius: 50%; background: #475569; border: 3px solid rgba(255,255,255,0.1); transition: 0.4s;"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -592,8 +769,9 @@
     </div>
 
     <script src="quran_data.js"></script>
+    <script src="ruku_data.js"></script>
     <script src="mutasyabihat_data.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=4"></script>
 </body>
 
 </html>
